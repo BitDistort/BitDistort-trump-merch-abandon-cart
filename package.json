@@ -1,0 +1,24 @@
+{
+  "name": "trump-merch-abandon-cart",
+  "version": "1.0.0",
+  "description": "",
+  "main": "spagetti.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node spagetti.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BitDistort/trump-merch-abandon-cart.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BitDistort/trump-merch-abandon-cart/issues"
+  },
+  "homepage": "https://github.com/BitDistort/trump-merch-abandon-cart#readme",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "line-reader": "^0.4.0"
+  }
+}
