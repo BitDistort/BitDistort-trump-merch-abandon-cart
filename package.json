@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "run": "node index.js",
-    "thiccboi": "node index.js --screenshot -t 6.9 --loop"
+    "thiccboi": "node index.js --screenshot -t 6.9 --loop",
+    "niceloop": "node index.js --screenshot -t 6969 --loop",
+    "spree": "node index.js --screenshot --loop"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,10 @@
     "fs-extra": "^9.0.1",
     "jsonfile": "^6.0.1",
     "line-reader": "^0.4.0",
+    "puppeteer": "^5.0.0",
+    "puppeteer-extra": "^3.1.9",
+    "puppeteer-extra-plugin-stealth": "^2.4.9",
+    "random-useragent": "^0.3.1",
     "shuffle-array": "^1.0.1"
   }
 }

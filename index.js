@@ -6,11 +6,13 @@ const Timeout =require( 'await-timeout');
 var checkOutDidntLoad = false;
 
 const {program} = require('commander');
+var randomUseragent = require('random-useragent');
 
 program
   .option('-t, --threshold <threshold>', 'Threshold reached before before dropping cart')
   .option('--screenshot', 'Screenshots record breaking cart subtotals')
   .option('--short', 'Only runs 2 selected items. DEVELOPER ONLY!')
+  .option('--browser', 'Runs in GUI Chromium')
   .option('-l, --loop', 'Automatically loops script');
  // .option('-p, --pizza-type <type>', 'flavour of pizza');
 
@@ -19,6 +21,7 @@ program
   //if (program.threshold) console.log(`${program.threshold}`);
 
 var cartThreshold;
+var options = {blank: "blank"}
 
 //console.log(`${program.threshold}`)
 
@@ -29,7 +32,14 @@ if(`${program.threshold}`) {
       cartThreshold = parseFloat(`${program.threshold}`.replace(new RegExp('[$,]', 'g'), ''));
 } else { cartThreshold = 0;}
 
-const puppeteer = require('puppeteer');
+// puppeteer-extra is a drop-in replacement for puppeteer,
+// it augments the installed puppeteer with plugin functionality
+const puppeteerExtra = require('puppeteer-extra')
+const puppeteer = require('puppeteer')
+
+// add stealth plugin and use defaults (all evasion techniques)
+const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+
 const readline = require('readline');
 const fs = require('fs');
 
@@ -46,6 +56,8 @@ const metricsPathGlobal = "metrics.json";
 const editJsonFile = require("edit-json-file");
 let metricsPath = editJsonFile(`${__dirname}/metrics.json`);
 var subtotalSession = 0;
+
+//var browser = {blank: "blank"};
 
 var objReadMetricsGlobal;
 
@@ -71,14 +83,50 @@ async function run () {
     //randomize array again
     urlArray = shuffle(urlArray);
 
+    //puppeteer.use(StealthPlugin())
+
+    const args = [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-infobars',
+        '--window-position=0,0',
+        '--ignore-certifcate-errors',
+        '--ignore-certifcate-errors-spki-list',
+        '--user-agent=' + randomUseragent.getRandom() // gets a random user agent string
+    ];
+
     //browser on?
-        //const browser = await puppeteer.launch({headless: false});
-    const browser = await puppeteer.launch();
+    if (myArgs.includes("--browser")) 
+    {
+        console.log("Running with browser")
+       
+            options = {
+                args,
+                headless: false,
+                ignoreHTTPSErrors: true
+            }
+        } else {
+        
+             options = {
+            args,
+            headless: true,
+            ignoreHTTPSErrors: true
+            }
+        
+    }
+
+    const browser = await puppeteer.launch(options);
+        //
+    
     const page = await browser.newPage();
     await page.setViewport({width: 3840, height: 2160});
 
     await page.setDefaultNavigationTimeout(0);
     await page.setDefaultTimeout(0);
+
+    //anti bot i think
+    await page.goto("https://shop.donaldjtrump.com", {"waitUntil" : "networkidle0", timeout: 10000});
+
 
     async function waitForCheckoutPage() {
         try {
@@ -91,6 +139,11 @@ async function run () {
           } catch (e36652234) {
               //console.log(e36652234)
             console.log("Checkout page waiting for too long!");
+
+            //await page.screenshot({path:'screenshot/checkouttimeout'});
+            //const html = await page.content();
+            //console.log(html);
+
             checkOutDidntLoad = true;
             //await page.screenshot({path: 'screenshots/toolongcheckout.png', fullPage: true});
 
@@ -127,7 +180,7 @@ async function run () {
         await repeatNetworkErr(itemUrl);
         console.log("went to " + itemUrl);
         //number of items selection dropdown click
-      /*  try {
+      try {
             console.log("Attempting to load dropdown")
 
             
@@ -148,7 +201,7 @@ async function run () {
             await addNewItem(itemUrl);
 
             return;
-          }*/
+          }
 
           await page.click("#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow");
 
@@ -193,7 +246,7 @@ async function run () {
             console.log("Error! noooooo");
             console.log(e);
             console.log('trying again...');
-            await addNewItem(itemUrl);
+            //await addNewItem(itemUrl);
             return;
        }
     }
