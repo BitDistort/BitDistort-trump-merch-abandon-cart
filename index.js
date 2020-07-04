@@ -5,6 +5,8 @@ const puppeteer = require('puppeteer');
 const readline = require('readline');
 const fs = require('fs');
 
+var shuffle = require('shuffle-array');
+
 const lineReader = require('line-reader');
 const { exit } = require('process');
 //Promise = require('bluebird');
@@ -31,10 +33,9 @@ var urlArray = [];
 //Transfer txt file into array
 lineReader.eachLine(urlPathGlobal, function(line) {
     urlArray.push(line);
+    //Randomize array
+    urlArray = shuffle(urlArray);
 });
-
-//Randomize array
-urlArray.sort(function() { return 0.5 - Math.random() });
 
 async function run () {
     //browser on?
@@ -157,9 +158,13 @@ async function run () {
       }
 
       //Start going HAM
-    await shopifySpree();
-    //await addNewItem("https://shop.donaldjtrump.com/products/trump-pence-snowflake-gift-wrapping-paper");
-    //await addNewItem("https://shop.donaldjtrump.com/products/official-make-america-great-again-45th-president-hat-red");
+    if (myArgs.includes("--short")) {
+        await shopifySpree();
+} else {
+    await addNewItem("https://shop.donaldjtrump.com/products/trump-pence-snowflake-gift-wrapping-paper");
+    await addNewItem("https://shop.donaldjtrump.com/products/official-make-america-great-again-45th-president-hat-red");
+    
+}
     //Additional $25 contribution
     
     //await page.click("html > body > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > main > div > div:nth-of-type(2) > form > div:nth-of-type(2) > div:nth-of-type(2) > div > div > div:nth-of-type(4) > input");
@@ -209,16 +214,13 @@ async function run () {
 //console.log('myArgs: ', myArgs);
 
 async function bringthepainon() {
-   /* switch (myArgs[0]) {
-        case '--loop':
-            while (true)  async _ => {
-                await run();
-                break;
+while (true) {
+              await run();
             }
-        default:
-            run();
-        }*/
-        await run();
 }
 
-bringthepainon()
+if (myArgs.includes("--loop") || (myArgs.includes("-l"))) {
+    bringthepainon();
+} else {
+    run();
+}

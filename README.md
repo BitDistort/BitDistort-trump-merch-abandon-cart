@@ -12,7 +12,7 @@ The browser runs in a headless state by default, all that is required is a CLI w
 
 To run a single cycle, run `node index.js`
 
-To automatically loop cycles, run `sh loop.sh`
+To automatically loop cycles, run `node index.js --loop`
 
 ### Metrics
 
