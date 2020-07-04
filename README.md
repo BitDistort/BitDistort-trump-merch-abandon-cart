@@ -16,9 +16,9 @@ To automatically loop cycles, run `node index.js --loop`
 
 To add a threshold for a cart subtotal size, do `node index.js -t 69420` which will set a threshold at $69,420 USD to drop the cart.
 
-To screenshot your BIGGEST cart EVER and flex on people, use `node index --screenshot`
+To screenshot your BIGGEST cart EVER and flex on people, use `node index.js --screenshot`
 
-Options can be added on top of each other, such as `node index --screenshot -t 69420 --loop`
+Options can be added on top of each other, such as `node index.js --screenshot -t 420 --loop`
 
 ### Metrics
 
