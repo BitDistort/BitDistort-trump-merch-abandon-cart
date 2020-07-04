@@ -82,6 +82,8 @@ async function run () {
         try {
             checkoutLoadstart = Date.now();
             await page.waitForSelector('html > body > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > main > div > div:nth-of-type(2) > form > div:nth-of-type(2) > div:nth-of-type(2) > div > div > div:nth-of-type(4) > label', {timeout: 7000});
+            //await page.waitForSelector('#shopify-section-product > main > div:nth-of-type(1) > div > div:nth-of-type(1) > form > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div > span > span:nth-of-type(1) > span > span:nth-of-type(2)', {timeout: 7000});
+            ////////////////////////////#shopify-section-product > main > div:nth-of-type(1) > div > div:nth-of-type(1) > form > div:nth-of-type(2) > div:nth-of-type(3) > div:nth-of-type(2) > div > span > span:nth-of-type(1) > span > span:nth-of-type(2)
             checkOutDidntLoad = false;
             return true;
           } catch (e36652234) {
@@ -89,6 +91,7 @@ async function run () {
             console.log("Checkout page waiting for too long!");
             checkOutDidntLoad = true;
             //await page.screenshot({path: 'screenshots/toolongcheckout.png', fullPage: true});
+
             return false;
           }
     
@@ -123,7 +126,8 @@ async function run () {
         console.log("went to " + itemUrl);
         //number of items selection dropdown click
         try {
-            await page.waitForSelector('#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow'), {timeout: 10000};
+            console.log("Attempting to load dropdown")
+            await page.waitForSelector('#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow'), {timeout: 7000};
 
           } catch {
               //if dropdown on product screen doesn't load, reload and start over...
