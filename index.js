@@ -127,9 +127,10 @@ async function run () {
         await repeatNetworkErr(itemUrl);
         console.log("went to " + itemUrl);
         //number of items selection dropdown click
-        try {
+      /*  try {
             console.log("Attempting to load dropdown")
 
+            
             const timer = new Timeout();
             try {
               await Promise.race([
@@ -147,7 +148,7 @@ async function run () {
             await addNewItem(itemUrl);
 
             return;
-          }
+          }*/
 
           await page.click("#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow");
 
