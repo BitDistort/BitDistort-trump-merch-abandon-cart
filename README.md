@@ -1,6 +1,6 @@
 # trump-merch-abandon-cart
 
-This script uses the puppeteer framework to repeatedly automatically load the cart full on Trump's Merch website https://shop.donaldjtrump.com without the need for a human and then abandons the cart. Such abandonment often ruins e-commerce metrics and costs companies trillions of dollars. This is an automated way to cause havoc to Trump's campaign.
+This script uses the puppeteer framework to repeatedly automatically load the cart full on Trump's Merch website https://shop.donaldjtrump.com without the need for a human and then abandons the cart. Such abandonment often ruins e-commerce metrics and costs companies millions of dollars. This is an automated way to cause havoc to Trump's campaign.
 
 ### Dependencies
 
