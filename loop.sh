@@ -1,4 +1,4 @@
 while true
 do
-node index.js --trace-warnings --screenshot
+node index.js --trace-warnings
 done

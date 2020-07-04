@@ -33,6 +33,9 @@ lineReader.eachLine(urlPathGlobal, function(line) {
     urlArray.push(line);
 });
 
+//Randomize array
+urlArray.sort(function() { return 0.5 - Math.random() });
+
 async function run () {
     //browser on?
         //const browser = await puppeteer.launch({headless: false});
