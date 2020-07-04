@@ -191,7 +191,8 @@ async function run () {
             if (thresholdNotReached === true) {
                 await addNewItem(eachUrl);
                 if (cartThreshold == 0) {
-                    console.log("cartThreshold is 0")
+                    //console.log("cartThreshold is 0")
+                    console.log("Checkout Loaded " + (Date.now() - checkoutLoadstart) + "ms")
                 } else {
                     //Confirm Checkout loaded
                     if(checkOutDidntLoad === false) {
