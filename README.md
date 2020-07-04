@@ -14,6 +14,8 @@ To run a single cycle, run `node index.js`
 
 To automatically loop cycles, run `node index.js --loop`
 
+To add a threshold for a cart subtotal size, do `node index.js -t 69420` which will set a threshold at $69,420 USD to drop the cart.
+
 ### Metrics
 
 Metrics are stored in `metrics.json` such as the largest cart dumped, the total number of cycles run, and the total amount dumped across every run.

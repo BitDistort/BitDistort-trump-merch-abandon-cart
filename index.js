@@ -1,6 +1,32 @@
 var myArgs = process.argv.slice(2);
 console.log('myArgs: ', myArgs);
 
+var checkOutDidntLoad = false;
+
+const {program} = require('commander');
+
+program
+  .option('-t, --threshold <threshold>', 'Threshold reached before before dropping cart')
+  .option('--screenshot', 'Screenshots record breaking cart subtotals')
+  .option('--short', 'Only runs 2 selected items. DEVELOPER ONLY!')
+  .option('-l, --loop', 'Automatically loops script');
+ // .option('-p, --pizza-type <type>', 'flavour of pizza');
+
+  program.parse(process.argv);
+
+  //if (program.threshold) console.log(`${program.threshold}`);
+
+var cartThreshold;
+
+//console.log(`${program.threshold}`)
+
+if(`${program.threshold}`) {
+    console.log(
+        `Limiting to Maximum Cart Subtotal of ${program.threshold} USD.`
+      );
+      cartThreshold = parseFloat(`${program.threshold}`.replace(new RegExp('[$,]', 'g'), ''));
+} else { cartThreshold = 0;}
+
 const puppeteer = require('puppeteer');
 const readline = require('readline');
 const fs = require('fs');
@@ -21,6 +47,8 @@ var subtotalSession = 0;
 
 var objReadMetricsGlobal;
 
+var checkoutLoadstart;
+
 
 var objMetricsEdit;
 //Create Metrics File if it doesn't exist
@@ -38,6 +66,9 @@ lineReader.eachLine(urlPathGlobal, function(line) {
 });
 
 async function run () {
+    //randomize array again
+    urlArray = shuffle(urlArray);
+
     //browser on?
         //const browser = await puppeteer.launch({headless: false});
     const browser = await puppeteer.launch();
@@ -49,11 +80,14 @@ async function run () {
 
     async function waitForCheckoutPage() {
         try {
+            checkoutLoadstart = Date.now();
             await page.waitForSelector('html > body > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > main > div > div:nth-of-type(2) > form > div:nth-of-type(2) > div:nth-of-type(2) > div > div > div:nth-of-type(4) > label', {timeout: 7000});
+            checkOutDidntLoad = false;
             return true;
           } catch (e36652234) {
               //console.log(e36652234)
             console.log("Checkout page waiting for too long!");
+            checkOutDidntLoad = true;
             //await page.screenshot({path: 'screenshots/toolongcheckout.png', fullPage: true});
             return false;
           }
@@ -62,10 +96,16 @@ async function run () {
 
     async function subtotal() {
         //Calculate total $$$ dumped
+        try {
     checkoutAmount = await page.evaluate(() => document.querySelector('html > body > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > main > div > div:nth-of-type(2) > form > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > p:nth-of-type(1)').textContent);
     console.log('Subtotal: ' + checkoutAmount);
     subtotalSession = parseFloat(checkoutAmount.replace(new RegExp('[$,]', 'g'), ''));
+    //checkOutDidntLoad = false;
     return checkoutAmount;
+        }
+        catch (checkoutformnotloading) {
+            //bruh
+        }
     }
 
     async function repeatNetworkErr(sendItemUrl) {
@@ -81,7 +121,6 @@ async function run () {
         console.log("loading: " + itemUrl);
         await repeatNetworkErr(itemUrl);
         console.log("went to " + itemUrl);
-       //await page.screenshot({path: 'screenshots/trump1.png', fullPage: true});
         //number of items selection dropdown click
         try {
             await page.waitForSelector('#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow');
@@ -97,7 +136,6 @@ async function run () {
           await page.click("#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow");
 
             console.log("dropdown selection clicked");
-        //await page.screenshot({path: 'screenshots/trump2.png', fullPage: true});
         //Maximum number of item in cart
         try {
             await page.waitForSelector('html > body > span > span > span:nth-of-type(2) > ul > li:last-child');
@@ -113,12 +151,9 @@ async function run () {
 
         await page.click("html > body > span > span > span:nth-of-type(2) > ul > li:last-child")
         console.log("clicked last child")
-        //await page.screenshot({path: 'screenshots/trump3.png', fullPage: true});
         //Click add to cart
         await page.click("html > body > div:nth-of-type(1) > div:nth-of-type(2) > div > main > div:nth-of-type(1) > div > div:nth-of-type(1) > form > div:nth-of-type(2) > div:nth-of-type(3) > button")
         console.log("clicked checkout")
-        //await page.screenshot({path: 'screenshots/trump1.png', fullPage: true});
-        //await page.screenshot({path: 'screenshots/trump4.png', fullPage: true});
         try {
             await page.waitForNavigation({ waitUntil: 'networkidle0', timeout:20000});
 
@@ -151,18 +186,36 @@ async function run () {
 
     async function shopifySpree () {
       
+        thresholdNotReached = true;
         for (const eachUrl of urlArray) {
+            if (thresholdNotReached === true) {
+                await addNewItem(eachUrl);
+                if (cartThreshold == 0) {
+                    console.log("cartThreshold is 0")
+                } else {
+                    //Confirm Checkout loaded
+                    if(checkOutDidntLoad === false) {
+                        console.log("Checkout Loaded " + (Date.now() - checkoutLoadstart) + "ms")
+                        //console.log(parseFloat(await subtotal()));
+                        //console.log("cartThreshhold "+ parseFloat(cartThreshold))
+                         if (parseFloat(subtotalSession) >= parseFloat(cartThreshold)) {
+                            console.log('threshold reached')
+                            thresholdNotReached = false;
+                            return;
+                        }
+                    }
+                }           
+            }
             //console.log(file);
-          await addNewItem(eachUrl);
         }
       }
 
       //Start going HAM
     if (myArgs.includes("--short")) {
-        await shopifySpree();
-} else {
     await addNewItem("https://shop.donaldjtrump.com/products/trump-pence-snowflake-gift-wrapping-paper");
     await addNewItem("https://shop.donaldjtrump.com/products/official-make-america-great-again-45th-president-hat-red");
+} else {
+    await shopifySpree();
     
 }
     //Additional $25 contribution
@@ -220,6 +273,7 @@ while (true) {
 }
 
 if (myArgs.includes("--loop") || (myArgs.includes("-l"))) {
+    console.log("Loop is enabled. Running until process stop command issued.")
     bringthepainon();
 } else {
     run();
