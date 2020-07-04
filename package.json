@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/BitDistort/trump-merch-abandon-cart#readme",
   "dependencies": {
+    "await-timeout": "^1.1.1",
     "bluebird": "^3.7.2",
     "commander": "^5.1.0",
     "edit-json-file": "^1.4.0",

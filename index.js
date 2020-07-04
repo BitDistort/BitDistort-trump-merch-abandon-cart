@@ -1,6 +1,8 @@
 var myArgs = process.argv.slice(2);
 console.log('myArgs: ', myArgs);
 
+const Timeout =require( 'await-timeout');
+
 var checkOutDidntLoad = false;
 
 const {program} = require('commander');
@@ -127,7 +129,17 @@ async function run () {
         //number of items selection dropdown click
         try {
             console.log("Attempting to load dropdown")
-            await page.waitForSelector('#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow'), {timeout: 7000};
+
+            const timer = new Timeout();
+            try {
+              await Promise.race([
+                await page.waitForSelector('#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow'), {timeout: 7000},
+                timer.set(7000, 'Timeout!')
+              ]);
+            } finally {
+              timer.clear();
+              //if dropdown on product screen doesn't load, reload and start over...
+            }
 
           } catch {
               //if dropdown on product screen doesn't load, reload and start over...
