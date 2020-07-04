@@ -123,7 +123,7 @@ async function run () {
         console.log("went to " + itemUrl);
         //number of items selection dropdown click
         try {
-            await page.waitForSelector('#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow');
+            await page.waitForSelector('#shopify-section-product > main > div.vp-80 > div > div.product-detail > form > div.info > div.product-options > div > div > span > span.selection > span > span.select2-selection__arrow'), {timeout: 20000};
 
           } catch {
               //if dropdown on product screen doesn't load, reload and start over...
