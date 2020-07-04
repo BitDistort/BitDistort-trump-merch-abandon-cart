@@ -20,6 +20,8 @@ To screenshot your BIGGEST cart EVER and flex on people, use `node index.js --sc
 
 Options can be added on top of each other, such as `node index.js --screenshot -t 420 --loop`
 
+Note: Errors displaying a navigation issue or a page not loading are normal, and the script will most likely reconfigure itself. Still, I'd like for these problems to go away, so feel free to drop an Issue on GitHub. Errors that stop the entire process are URGENT and should be reported ASAP.
+
 ### Metrics
 
 Metrics are stored in `metrics.json` such as the largest cart dumped, the total number of cycles run, and the total amount dumped across every run.

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node index.js"
+    "run": "node index.js",
+    "thiccboi": "node index.js --screenshot -t 6.9 --loop"
   },
   "repository": {
     "type": "git",
