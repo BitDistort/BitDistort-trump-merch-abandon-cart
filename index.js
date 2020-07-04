@@ -196,11 +196,11 @@ async function run () {
                 await addNewItem(eachUrl);
                 if (cartThreshold == 0) {
                     //console.log("cartThreshold is 0")
-                    console.log("Checkout Loaded " + (Date.now() - checkoutLoadstart) + "ms")
+                    console.log("Checkout Took " + (Date.now() - checkoutLoadstart) + "ms")
                 } else {
                     //Confirm Checkout loaded
                     if(checkOutDidntLoad === false) {
-                        console.log("Checkout Loaded " + (Date.now() - checkoutLoadstart) + "ms")
+                        console.log("Checkout Took " + (Date.now() - checkoutLoadstart) + "ms")
                         //console.log(parseFloat(await subtotal()));
                         //console.log("cartThreshhold "+ parseFloat(cartThreshold))
                          if (parseFloat(subtotalSession) >= parseFloat(cartThreshold)) {
