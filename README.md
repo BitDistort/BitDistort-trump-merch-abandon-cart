@@ -6,7 +6,7 @@ This script uses the puppeteer framework to repeatedly automatically load the ca
 
 Run `npm install` to install all dependencies.
 
-The browser runs in a headless state by default, all that is required is a CLI window.
+The browser runs in a headless state by default, all that is required is a CLI.
 
 ### Running
 
