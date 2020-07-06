@@ -35,7 +35,7 @@ if(`${program.threshold}`) {
 // puppeteer-extra is a drop-in replacement for puppeteer,
 // it augments the installed puppeteer with plugin functionality
 const puppeteerExtra = require('puppeteer-extra')
-const puppeteer = require('puppeteer')
+const puppeteer = require('puppeteer-extra')
 
 // add stealth plugin and use defaults (all evasion techniques)
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
@@ -124,9 +124,32 @@ async function run () {
     await page.setDefaultNavigationTimeout(0);
     await page.setDefaultTimeout(0);
 
+    //enable request interception
+    await page.setRequestInterception(true);
+
+    //if screenshots disabled, disable font + image loading to make page slightly faster.
+    page.on("request", r => {
+
+        //check if --screenshot and --browser disabled
+        if ((myArgs.includes("--screenshot") === false) && (myArgs.includes("--browser") === false)) {
+            //check if incoming request is image or font.
+            if (
+                ["image", "font"].indexOf(r.resourceType()) !== -1 
+              ) {
+                  //block the request
+                r.abort();
+              } else {
+                  //all other data can continue
+                r.continue();
+              }      
+        }
+
+      });
+
     //anti bot i think
     await page.goto("https://shop.donaldjtrump.com", {"waitUntil" : "networkidle0", timeout: 10000});
 
+    puppeteer.use(StealthPlugin())
 
     async function waitForCheckoutPage() {
         try {
@@ -343,9 +366,23 @@ while (true) {
             }
 }
 
-if (myArgs.includes("--loop") || (myArgs.includes("-l"))) {
-    console.log("Loop is enabled. Running until process stop command issued.")
-    bringthepainon();
-} else {
-    run();
+async function wearebulletproof() {
+    if (myArgs.includes("--loop") || (myArgs.includes("-l"))) {
+        console.log("Loop is enabled. Running until process stop command issued.")
+        await bringthepainon();
+    } else {
+        await run();
+    }
 }
+
+wearebulletproof();
+// puppeteer usage as normal
+/*puppeteer.launch({ headless: true }).then(async browser => {
+    console.log('Running tests..')
+    const page = await browser.newPage()
+    await page.goto('https://bot.sannysoft.com')
+    await page.waitFor(5000)
+    await page.screenshot({ path: 'screenshots/testresult.png', fullPage: true })
+    await browser.close()
+    console.log(`All done, check the screenshot. ✨`)
+  })*/
