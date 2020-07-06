@@ -149,6 +149,7 @@ async function run () {
     //anti bot i think
     await page.goto("https://shop.donaldjtrump.com", {"waitUntil" : "networkidle0", timeout: 10000});
 
+    //bravo six, going dark
     puppeteer.use(StealthPlugin())
 
     async function waitForCheckoutPage() {
@@ -221,7 +222,7 @@ async function run () {
           } catch {
               //if dropdown on product screen doesn't load, reload and start over...
             console.log('not found');
-            await addNewItem(itemUrl);
+            //await addNewItem(itemUrl);
 
             return;
           }
